@@ -1,0 +1,47 @@
+# Python 字节码和缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 虚拟环境（使用 uv 创建的 .venv）
+.venv/
+venv/
+env/
+ENV/
+
+# 包构建产物
+dist/
+build/
+*.egg-info/
+*.egg
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 日志文件
+*.log
+
+# 操作系统临时文件
+Thumbs.db
+.DS_Store
+
+# 如果使用 jupyter notebook 的临时文件
+.ipynb_checkpoints/
+
+# 如果使用 dotenv 环境变量文件
+.env
+.env.*
+!.env.example
+
+# uv 锁文件（可选，根据团队约定决定是否忽略）
+# uv.lock   # 如果不想提交锁文件，取消注释
+

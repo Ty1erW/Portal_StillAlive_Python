@@ -46,7 +46,8 @@ is_vt = re.search(r"vt(\d+)", term)
 
 # xterm, rxvt, konsole ...
 # but fbcon in linux kernel does not support screen buffer
-enable_screen_buffer = not (is_vt or term == "linux")
+# Disabled to preserve terminal transparency and background
+enable_screen_buffer = False
 
 # color support is after VT241
 enable_color = not is_vt or int(re.search(r"\d+", is_vt.group()).group()) >= 241
@@ -86,7 +87,7 @@ def begin_draw():
         print_lock.release()
     if enable_color:
         print_lock.acquire()
-        print('\033[33;40;1m', end='')
+        print('\033[33;1m', end='')  # Yellow foreground, bold - no background to preserve transparency
         print_lock.release()
 
 
@@ -399,7 +400,7 @@ lyrics = [
     lyric("Test Assessment Report",             200,    -1,   0),
     lyric("\00\00\00\00\00\00\00",              400,    - \
           1,   0),  # Keep flushing the buffer
-    lyric("",                                   710,    0,    4),  # Music start
+    lyric("",                                   680,    0,    4),  # Music start
     lyric("This was a triumph.",                730,    2,    0),
     lyric("",                                   930,    0,    5),  # Credits start
     lyric("I'm making a note here:",            1123,   2,    0),
@@ -837,6 +838,7 @@ while(lyrics[currentLyric].mode != 9):
 
     if(currentTime > lyrics[currentLyric].time):
 
+        wordCount = 1
         if(lyrics[currentLyric].mode <= 1 or lyrics[currentLyric].mode >= 5):
             wordCount = len(lyrics[currentLyric].words)
         if(wordCount == 0):
@@ -845,6 +847,7 @@ while(lyrics[currentLyric].mode != 9):
         if(lyrics[currentLyric].interval < 0):
             interval = (lyrics[currentLyric + 1].time -
                         lyrics[currentLyric].time) / 100.0 / wordCount
+            interval = max(0, interval)  # Ensure non-negative
         else:
             interval = lyrics[currentLyric].interval / wordCount
 
@@ -868,7 +871,7 @@ while(lyrics[currentLyric].mode != 9):
             y = 0
         elif(lyrics[currentLyric].mode == 4):
             if enable_sound:
-                playsound.playsound(str(Path.cwd() / 'sa1.mp3'), False)
+                playsound.playsound(str(Path.cwd() / 'still_alive.mp3'), False)
         elif(lyrics[currentLyric].mode == 5):
             th_credit = thread_credits()
             th_credit.daemon = True
